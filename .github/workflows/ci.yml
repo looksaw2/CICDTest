@@ -27,7 +27,7 @@ jobs:
         run: go test -bench=. -benchmem ./...
 
       - name: Build Application
-        run: go build -o main .
+        run: go build -o main ./cmd
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
