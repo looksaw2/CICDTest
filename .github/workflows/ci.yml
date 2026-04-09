@@ -1,0 +1,36 @@
+name: GO WEB CLI
+
+on:
+  push: 
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+
+jobs:
+  test-and-bench:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setu-gop@v5
+        with:
+          go-version: '1.26.1'
+      - name: Install Denpendencies
+        run: go mod download
+      
+      - name: Run Unit Test
+        run: go test ./...
+      
+      - name: Run Benchmarks (Pressure Test)
+        run: go test -bench=. -benchmem ./...
+
+      - name: Build Application
+        run: go build -o main .
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hello-world-binary
+          path: main
