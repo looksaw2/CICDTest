@@ -26,8 +26,17 @@ jobs:
       - name: Run Benchmarks (Pressure Test)
         run: go test -bench=. -benchmem ./...
 
-      - name: Build Application
-        run: go build -o main ./cmd
+      - name: Build Application And Run Server
+        run: |
+          go build -o main ./cmd
+          ./main & # 在后台启动 Go Web 服务
+          sleep 5  # 等待几秒确保服务完全启动
+
+      - name: Run k6 Load Test
+        uses: grafana/k6-action@v0.3.1
+        with:
+          filename: load-test.js
+          
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
